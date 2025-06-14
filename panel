@@ -21,27 +21,27 @@ fi
 
 echo -e "${CYAN}$ascii_art${NC}"
 
-echo "* Installing Dependencies"
-apt update
-apt install -y curl software-properties-common git
+echo -e "${CYAN}* Installing Dependencies...${NC}"
+apt update && apt install -y curl software-properties-common git
+
+echo -e "${CYAN}* Setting up Node.js 20.x...${NC}"
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt install -y nodejs
 
-echo "* Installing Files"
-mkdir -p panel5
-cd panel5 || exit 1
-git clone https://github.com/achul123/panel5.git
-cd panel5 || exit 1
+echo -e "${CYAN}* Cloning and Installing Panel5...${NC}"
+git clone https://github.com/achul123/panel5.git panel5
+cd panel5 || { echo -e "${RED}Failed to enter panel5 directory.${NC}"; exit 1; }
+
 npm install
 
-echo "* Starting Skyport"
+echo -e "${CYAN}* Running Database Seed & Create User...${NC}"
 npm run seed
 npm run createUser
 
-echo "* Starting Skyport With PM2"
-npm install -g pm2
-pm2 start index.js
+echo -e "${CYAN}* Installing PM2 & Starting Skyport...${NC}"
+npm install -g pm2 --unsafe-perm
+pm2 start index.js --name skyport
 
 clear
-echo "* Skyport Installed and Started on Port 3001"
-echo "* Made by Faded"
+echo -e "${CYAN}* Skyport Installed and Started on Port 3001${NC}"
+echo -e "${CYAN}* Made by Faded${NC}"
