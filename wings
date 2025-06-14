@@ -1,0 +1,9 @@
+#!/bin/bash
+
+git clone https://github.com/achul123/skyportd.git
+cd skyportd || exit 1
+npm install
+
+echo "* cd skyportd"
+echo "* Paste your configure code"
+echo "* pm2 start ."
