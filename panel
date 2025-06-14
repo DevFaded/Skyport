@@ -1,0 +1,47 @@
+#!/bin/bash
+
+ascii_art="
+ _____         _          _ 
+|  ___|_ _  __| | ___  __| |
+| |_ / _` |/ _` |/ _ \/ _` |
+|  _| (_| | (_| |  __/ (_| |
+|_|  \__,_|\__,_|\___|\__,_|
+"
+
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+clear
+
+if [ "$EUID" -ne 0 ]; then
+  echo -e "${RED}Please run this script as root.${NC}"
+  exit 1
+fi
+
+echo -e "${CYAN}$ascii_art${NC}"
+
+echo "* Installing Dependencies"
+apt update
+apt install -y curl software-properties-common git
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt install -y nodejs
+
+echo "* Installing Files"
+mkdir -p panel5
+cd panel5 || exit 1
+git clone https://github.com/achul123/panel5.git
+cd panel5 || exit 1
+npm install
+
+echo "* Starting Skyport"
+npm run seed
+npm run createUser
+
+echo "* Starting Skyport With PM2"
+npm install -g pm2
+pm2 start index.js
+
+clear
+echo "* Skyport Installed and Started on Port 3001"
+echo "* Made by Faded"
